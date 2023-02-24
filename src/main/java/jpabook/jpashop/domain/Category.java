@@ -8,6 +8,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.*;
+
 @Entity
 @Getter
 @Setter
@@ -27,10 +29,16 @@ public class Category {
     private List<Item> items = new ArrayList<>();
 
     //카테고리 계층 구조
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;
 
     @OneToMany(mappedBy = "parent") //같은 entity에 대해 매핑
     private List<Category> child = new ArrayList<>();
+
+    //==연관관계 메서드==//
+    public void addChildCategory(Category child) {
+        this.child.add(child);
+        child.setParent(this);
+    }
 }
